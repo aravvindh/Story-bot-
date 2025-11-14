@@ -1,11 +1,24 @@
 import React from 'react';
 
 interface MascotProps {
-  isAnimating: boolean;
+  state: 'idle' | 'thinking' | 'happy';
 }
 
-const Mascot: React.FC<MascotProps> = ({ isAnimating }) => {
-  const animationClass = isAnimating ? 'animate-thinking' : 'animate-idle';
+const Mascot: React.FC<MascotProps> = ({ state }) => {
+  const getAnimationClass = () => {
+    switch (state) {
+      case 'thinking':
+        return 'animate-thinking';
+      case 'happy':
+        return 'animate-happy-bounce';
+      case 'idle':
+      default:
+        return 'animate-idle';
+    }
+  };
+  
+  const animationClass = getAnimationClass();
+  const isThinking = state === 'thinking';
 
   return (
     <div className={`w-full h-full ${animationClass}`}>
@@ -31,8 +44,8 @@ const Mascot: React.FC<MascotProps> = ({ isAnimating }) => {
           cy="15" 
           r="6" 
           fill="#F8E71C" 
-          className={isAnimating ? 'animate-pulse' : ''}
-          style={{ animationDuration: '0.5s', filter: isAnimating ? 'url(#glow)' : 'none' }}
+          className={isThinking ? 'animate-pulse' : ''}
+          style={{ animationDuration: '0.5s', filter: isThinking ? 'url(#glow)' : 'none' }}
         />
         
         {/* Eyes */}
