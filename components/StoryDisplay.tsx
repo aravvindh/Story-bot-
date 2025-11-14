@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 
 interface StoryDisplayProps {
@@ -24,7 +23,8 @@ const AnimatedText: React.FC<{ text: string }> = ({ text }) => {
         }
     }, [text]);
 
-    return <p className="text-gray-700 leading-relaxed">{displayedText}<span className="animate-pulse">|</span></p>;
+    // Use a non-breaking space to prevent layout shift when empty
+    return <p className="text-gray-700 text-lg leading-relaxed">{displayedText || '\u00A0'}<span className="animate-pulse opacity-50">|</span></p>;
 };
 
 
@@ -32,7 +32,7 @@ const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, example }) => {
   const [showExample, setShowExample] = useState(false);
 
   useEffect(() => {
-    // Show example after story is likely finished typing
+    setShowExample(false); // Reset on new story
     const storyTypingTime = story.length * 30 + 1000; // a little buffer
     const timer = setTimeout(() => {
       setShowExample(true);
@@ -42,18 +42,24 @@ const StoryDisplay: React.FC<StoryDisplayProps> = ({ story, example }) => {
   }, [story]);
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="bg-sky-100/50 p-4 rounded-xl shadow-sm">
-        <h3 className="text-xl font-bold text-sky-800 mb-2 flex items-center gap-2">
-          <span role="img" aria-label="storybook">📖</span> Here's a Story...
+    <div className="space-y-8">
+      <div className="relative bg-white/80 p-6 pt-8 rounded-3xl rounded-tl-lg shadow-lg animate-pop-in">
+        <div className="absolute -top-5 left-4 w-14 h-14 bg-sky-400 rounded-full flex items-center justify-center text-3xl shadow-md transform rotate-[-10deg]">
+          📖
+        </div>
+        <h3 className="text-2xl font-bold text-sky-800 mb-2 ml-16">
+          Here's a Story...
         </h3>
         <AnimatedText text={story} />
       </div>
 
       {showExample && (
-        <div className="bg-green-100/50 p-4 rounded-xl shadow-sm animate-fade-in">
-          <h3 className="text-xl font-bold text-green-800 mb-2 flex items-center gap-2">
-            <span role="img" aria-label="lightbulb">💡</span> For Example...
+        <div className="relative bg-white/80 p-6 pt-8 rounded-3xl rounded-tr-lg shadow-lg animate-pop-in" style={{animationDelay: '0.2s'}}>
+            <div className="absolute -top-5 right-4 w-14 h-14 bg-green-400 rounded-full flex items-center justify-center text-3xl shadow-md transform rotate-[10deg]">
+                💡
+            </div>
+          <h3 className="text-2xl font-bold text-green-800 mb-2 text-right mr-16">
+            For Example...
           </h3>
            <AnimatedText text={example} />
         </div>
